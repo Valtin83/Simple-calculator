@@ -35,7 +35,7 @@ class CalculatorServiceTest {
     void divide() {
         assertEquals(2, calc.divide(6, 3), "6 / 3 должно быть 2");
         assertEquals(0, calc.divide(0, 5), "0 / 5 должно быть 0");
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(ArithmeticException.class, () -> {
             calc.divide(1, 0);
         }, "Деление на ноль должно вызывать ArithmeticException");
     }
