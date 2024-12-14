@@ -17,9 +17,9 @@ public class CalculatorService {
         return num1 * num2;
     }
 
-    public double divide(double num1, double num2) throws IllegalArgumentException {
+    public double divide(double num1, double num2) throws ArithmeticException {
         if (num2 == 0) {
-            throw new IllegalArgumentException("Деление на ноль недопустимо.");
+            throw new ArithmeticException("Деление на ноль недопустимо.");
         }
         return num1 / num2;
     }

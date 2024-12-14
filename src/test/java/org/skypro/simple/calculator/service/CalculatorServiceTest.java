@@ -1,41 +1,105 @@
 package org.skypro.simple.calculator.service;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.stream.Stream;
+
 
 class CalculatorServiceTest {
 
     private final CalculatorService calc = new CalculatorService();
 
-    @Test
-    void add() {
-        assertEquals(5, calc.add(2, 3), "2 + 3 должно быть 5");
-        assertEquals(10, calc.add(7, 3), "7 + 3 должно быть 10");
-        assertEquals(6, calc.add(3, 3), "3 + 3 должно быть 6");
+    // Параметризованный тест для сложения
+    @ParameterizedTest
+    @MethodSource("additionArgumentsProvider")
+    void add(double num1, double num2, double expected) {
+        Assertions.assertEquals(expected, calc.add(num1, num2),
+                "%s + %s должно быть %s".formatted(num1, num2, expected));
+    }
+
+    // Параметризованный тест для вычитания
+    @ParameterizedTest
+    @MethodSource("subtractionArgumentsProvider")
+    void subtract(double num1, double num2, double expected) {
+        Assertions.assertEquals(expected, calc.subtract(num1, num2),
+                "%s - %s должно быть %s".formatted(num1, num2, expected));
+    }
+
+    // Параметризованный тест для умножения
+    @ParameterizedTest
+    @MethodSource("multiplicationArgumentsProvider")
+    void multiply(double num1, double num2, double expected) {
+        Assertions.assertEquals(expected, calc.multiply(num1, num2),
+                "%s * %s должно быть %s".formatted(num1, num2, expected));
+    }
+
+    // Параметризованный тест для деления
+    @ParameterizedTest
+    @MethodSource("divisionArgumentsProvider")
+    void divide(double num1, double num2, double expected) {
+        Assertions.assertEquals(expected, calc.divide(num1, num2),
+                "%s / %s должно быть %s".formatted(num1, num2, expected));
 
     }
 
-    @Test
-    void subtract() {
-        assertEquals(1, calc.subtract(3, 2), "3 - 2 должно быть 1");
-        assertEquals(-1, calc.subtract(2, 3), "2 - 3 должно быть -1");
-        assertEquals(0, calc.subtract(3, 3), "3 - 3 должно быть 0");
+    // Тест для деления на ноль
+    @ParameterizedTest
+    @MethodSource("divisionByZeroArgumentsProvider")
+    void divideByZeroThrowsException(Double num1) {
+        Assertions.assertThrows(ArithmeticException.class, () -> calc.divide(num1, 0.0),
+                "Деление на ноль должно вызывать исключение");
     }
 
-    @Test
-    void multiply() {
-        assertEquals(6, calc.multiply(2, 3), "2 * 3 должно быть 6");
-        assertEquals(0, calc.multiply(0, 5), "0 * 5 должно быть 0");
-        assertEquals(-6, calc.multiply(-2, 3), "-2 * 3 должно быть -6");
+    // Провайдер аргументов для сложения
+    static Stream<Arguments> additionArgumentsProvider() {
+        return Stream.of(
+                Arguments.of(1, 1, 2),
+                Arguments.of(2, 3, 5),
+                Arguments.of(-1, 1, 0),
+                Arguments.of(-1, -1, -2)
+        );
     }
 
-    @Test
-    void divide() {
-        assertEquals(2, calc.divide(6, 3), "6 / 3 должно быть 2");
-        assertEquals(0, calc.divide(0, 5), "0 / 5 должно быть 0");
-        assertThrows(IllegalArgumentException.class, () -> { calc.divide(1, 0);
-        }, "Деление на ноль должно вызывать ArithmeticException");
+    // Провайдер аргументов для вычитания
+    static Stream<Arguments> subtractionArgumentsProvider() {
+        return Stream.of(
+                Arguments.of(3, 2, 1),
+                Arguments.of(5, 2, 3),
+                Arguments.of(-1, 1, -2),
+                Arguments.of(-1, -1, 0)
+        );
+    }
+
+    // Провайдер аргументов для умножения
+    static Stream<Arguments> multiplicationArgumentsProvider() {
+        return Stream.of(
+                Arguments.of(2, 3, 6),
+                Arguments.of(-2, 3, -6),
+                Arguments.of(0, 5, 0),
+                Arguments.of(-2, -3, 6)
+        );
+    }
+
+    // Провайдер аргументов для деления
+    static Stream<Arguments> divisionArgumentsProvider() {
+        return Stream.of(
+                Arguments.of(6, 3, 2),
+                Arguments.of(-6, 3, -2),
+                Arguments.of(0, 5, 0),
+                Arguments.of(10, 2, 5)
+        );
+    }
+
+    // Поставщики аргументов для проверки деления на ноль
+    private static Stream<Arguments> divisionByZeroArgumentsProvider() {
+        return Stream.of(
+                Arguments.of(1.0),
+                Arguments.of(-1.0),
+                Arguments.of(100.0),
+                Arguments.of(0.0)
+        );
     }
 }
