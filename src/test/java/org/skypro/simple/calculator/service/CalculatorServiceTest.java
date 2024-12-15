@@ -49,7 +49,7 @@ class CalculatorServiceTest {
     @ParameterizedTest
     @MethodSource("divisionByZeroArgumentsProvider")
     void divideByZeroThrowsException(Double num1) {
-        Assertions.assertThrows(ArithmeticException.class, () -> calc.divide(num1, 0.0),
+        Assertions.assertThrows(IllegalArgumentException .class, () -> calc.divide(num1, 0.0),
                 "Деление на ноль должно вызывать исключение");
     }
 
@@ -93,7 +93,7 @@ class CalculatorServiceTest {
         );
     }
 
-    // Поставщики аргументов для проверки деления на ноль
+    // Аргументы для проверки деления на ноль
     private static Stream<Arguments> divisionByZeroArgumentsProvider() {
         return Stream.of(
                 Arguments.of(1.0),
